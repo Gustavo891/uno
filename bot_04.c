@@ -1,5 +1,5 @@
 // compilador: gcc bot_04.c -o bot_04
-// gerenciador: ./uno bot_A bot_B bot_04 -s 40531
+// gerenciador: ./uno bot_B bot_04 -s 60529 -v
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,13 +63,15 @@ void mudaCor(char complemento2[MAX_LINE], Carta vetor[], Carta table[]) {
   char cartaRecebida[6];
   for (int i = 0; i < 30; i++) {
     if (strcmp(complemento2, vetor[i].naipeCarta) == 0) {
-      printf("DISCARD %s%s\n", vetor[i].valorCarta, vetor[i].naipeCarta);
       strcpy(table[0].valorCarta, vetor[i].valorCarta);
       strcpy(table[0].naipeCarta, vetor[i].naipeCarta);
       if (strcmp(vetor[i].valorCarta, "C") == 0 ||
           strcmp(vetor[i].valorCarta, "A") == 0) {
-        printf(" %s", vetor[i].naipeCarta);
-      }
+        printf("DISCARD %s%s %s\n", vetor[i].valorCarta, vetor[i].naipeCarta,
+               vetor[i].naipeCarta);
+      } else {
+        printf("DISCARD %s%s\n", vetor[i].valorCarta, vetor[i].naipeCarta);
+			}
       memset(vetor[i].valorCarta, '\0', 3);
       memset(vetor[i].naipeCarta, '\0', 4);
 
@@ -177,7 +179,6 @@ int main() {
       if (strcmp(complement, meu_id) != 0) {
         cartaValida = 1;
       }
-
       if (strcmp(action, "DISCARD") == 0) {
         cartaValida = 0;
         strcpy(card, complement);
@@ -186,23 +187,20 @@ int main() {
             (strncmp(complement, "C", 1) == 0)) {
 
           scanf(" %s", secondComplement);
-					strcpy(table[0].naipeCarta, secondComplement);
+          strcpy(table[0].naipeCarta, secondComplement);
         }
       }
     } while (strcmp(action, "TURN") || strcmp(complement, meu_id));
 
-    fprintf(stderr, "\nValor da Jogada: %s\n", table[0].valorCarta);
-    fprintf(stderr, "Naipe da Jogada: %s\n", table[0].naipeCarta);
-
     if (strstr(table[0].valorCarta, "C") != NULL && cartaValida == 0) {
-      acaoComprar(table, cartas); // NNN MUDA ESSA N, ESSA TA PERFEITO
+      acaoComprar(table, cartas); 
 
-    } else if (strstr(table[0].valorCarta, "V") != NULL && cartaValida == 0) {
-      acaoComprar(table, cartas); // SÓ MUDA ESSE
-
+    } else if (strstr(table[0].valorCarta, "V") != NULL ||
+               strcmp(table[0].valorCarta, "V") == 0 && cartaValida == 0) {
+      acaoComprar(table, cartas); 
+			
     } else if (strstr(table[0].valorCarta, "A") != NULL && cartaValida == 0) {
       strcpy(table[0].naipeCarta, secondComplement);
-      fprintf(stderr, "Naipe NOVO: %s\n", table[0].naipeCarta);
       mudaCor(secondComplement, cartas, table);
 
     } else {
